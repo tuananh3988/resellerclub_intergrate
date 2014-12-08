@@ -4,7 +4,10 @@ function resellerclub_intergrate_init() {
 	global $endpoints;
 	$endpoints = array(
 		'domain' => array(
-			'availability' => '/api/domains/available.json',
+			'availability' => array(
+                            'url'  => '/api/domains/available.json',
+                            'params'    => array('domain-name', 'tlds')
+                        ),
 			'availability_idn' => '/api/domains/idn-available.json',
 			'availability_premium' => '/api/domains/premium/available.json',
 		)

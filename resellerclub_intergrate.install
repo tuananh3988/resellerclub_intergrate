@@ -1,1 +1,9 @@
 <?php
+/**
+ * Implements hook_install().
+ */
+function resellerclub_intergrate_install() {
+    variable_set('resellerclub_id', '567054');
+    variable_set('resellerclub_key', 'RFi24VpCrcigyaXHk2DoN0tiURuu0YMb');
+    variable_set('resellerclub_server', 'https://test.httpapi.com');
+}

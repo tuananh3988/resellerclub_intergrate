@@ -31,14 +31,46 @@ function form_resellerclub_intergrate_config($form, &$form_state) {
 }
 
 function resellerclub_intergrate_connect($type, $key, $params) {
-	
-	
+	$build = resellerclub_intergrate_build_url($type, $key, $params);
+        $data = curl_get_contents($build['url'], $build['params']);
+        
+	$result = json_decode($data, TRUE);
+
+        if(isset($result['status']) && $result['status'] == 'ERROR') {
+                $message = $result['message'];
+        }
+        else {
+            foreach ($result as $k => $v) {
+                $message = $k . ' ' . $v['status'];
+            }
+        }
+        
+        return $message;
 }
 
 function resellerclub_intergrate_build_url($type, $key, $params = array()) {
 	global $endpoints;
-	$url = variable_get('resellerclub_server') . $endpoints[$type][$key] . '?auth-userid=' . variable_get('resellerclub_id') .
-		'&api-key=' . variable_get('resellerclub_id');
+	$url = variable_get('resellerclub_server') . $endpoints[$type][$key]['url'];
 	
-	return $url;
+        $paramStr = 'auth-userid=' . variable_get('resellerclub_id') . '&api-key=' . variable_get('resellerclub_key');;
+        foreach($endpoints[$type][$key]['params'] as $param) {
+            if(!empty($params[$param])) {
+                $paramStr .= '&' . $param . '=' . $params[$param];
+            }
+        }
+        
+	return array('url' => $url, 'params' => $paramStr);
+}
+
+function curl_get_contents($url, $params) {
+    $ch = curl_init();
+
+    
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+
+    $data = curl_exec($ch);
+
+    return $data;
 }

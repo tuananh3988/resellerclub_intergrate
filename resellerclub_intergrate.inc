@@ -32,15 +32,13 @@ function form_resellerclub_intergrate_config($form, &$form_state) {
 
 function resellerclub_intergrate_connect($type, $key, $params) {
 	$build = resellerclub_intergrate_build_url($type, $key, $params);
-        $data = curl_get_contents($build['url'], $build['params']);
-        
-	$result = json_decode($data, TRUE);
+        $result = curl_get_contents($build['url'], $build['params']);
 
         if(isset($result['status']) && $result['status'] == 'ERROR') {
                 $message = $result['message'];
         }
         else {
-            foreach ($result as $k => $v) {
+            foreach ($result['data'] as $k => $v) {
                 $message = $k . ' ' . $v['status'];
             }
         }
@@ -64,13 +62,33 @@ function resellerclub_intergrate_build_url($type, $key, $params = array()) {
 
 function curl_get_contents($url, $params) {
     $ch = curl_init();
-
-    
+   
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 
-    $data = curl_exec($ch);
-
-    return $data;
+    
+    if(curl_errno($ch) > 0) {
+        $result = array(
+            'status' => 'ERROR',
+            'message' => curl_error($ch),
+        );
+    }
+    else {
+        $data = json_decode(curl_exec($ch), TRUE);
+        if(isset($data['status']) && $data['status'] == 'ERROR') {
+            $result = $data;
+        }
+        else {
+            $result = array(
+                'status' => 'SUCCESS',
+                'data' => $data,
+            );
+        }
+        
+    }
+    
+    curl_close($ch);
+    
+    return $result;
 }

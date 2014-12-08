@@ -36,6 +36,7 @@ function form_resellerclub_intergrate_domain_availability_submit($form, &$form_s
         'tlds'  => substr($form_state['values']['domain-name'], $pos + 1),
     );
     
+    //var_dump($params);die;
     $message = resellerclub_intergrate_connect('domain', 'availability', $params);
        
     $form_state['resellerclub_intergrate_result'] = $message;

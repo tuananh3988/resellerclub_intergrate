@@ -1,0 +1,40 @@
+<?php
+
+function resellerclub_intergrate_init() {
+	global $endpoints;
+	$endpoints = array(
+		'domain' => array(
+			'availability' => '/api/domains/available.json',
+			'availability_idn' => '/api/domains/idn-available.json',
+			'availability_premium' => '/api/domains/premium/available.json',
+		)
+		
+	);
+	
+	module_load_include('inc', 'resellerclub_intergrate', 'resellerclub_intergrate');
+}
+
+function resellerclub_intergrate_menu() {
+  $items = array();
+  $items['admin/config/resellerclub'] = array(
+    'title' => 'Reseller club config',
+	'page callback' => 'drupal_get_form',
+    'page arguments' => array('form_resellerclub_intergrate_config'),
+    'access callback' => TRUE,
+    'file' => 'resellerclub_intergrate.inc',
+	'type' => MENU_LOCAL_TASK,
+  );
+  
+  $items['domain/availability'] = array(
+    'title' => 'Check Availability',
+	'page callback' => 'drupal_get_form',
+    'page arguments' => array('form_resellerclub_intergrate_domain_availability'),
+    'access callback' => TRUE,
+    'file' => 'resellerclub_intergrate_domain.inc',
+	'type' => MENU_LOCAL_TASK,
+  );
+	
+  return $items;
+  
+}
+

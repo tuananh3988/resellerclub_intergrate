@@ -1,0 +1,12 @@
+name = Reseller intergrate teachitinc
+description = Intergrate Reseller club
+package = Other modules
+core = 7.x
+configure = admin/config/resellerclub
+
+; Information added by Drupal.org packaging script on 2014-10-03
+version = "1.0"
+core = "7.x"
+project = "resellerclub_intergrate"
+datestamp = "1412378934"
+resellerclub_id = abc
